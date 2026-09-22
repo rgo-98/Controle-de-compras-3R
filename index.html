@@ -1031,23 +1031,52 @@ function getApiToken() { return localStorage.getItem(KEY_API_TOKEN) || ''; }
 function apiConfigurada() { return !!(getApiUrl() && getApiToken()); }
 
 /* ---------- CHAMADA À API ---------- */
-async function chamarApi(action, dados = {}) {
+let ultimaOperacao = 0; // timestamp da última interação do usuário — pausa sinc automática logo após
+
+async function chamarApi(action, dados = {}, opts = {}) {
   const url = getApiUrl();
   const token = getApiToken();
   if (!url) throw new Error('API não configurada');
 
-  // POST com text/plain evita preflight CORS no Apps Script
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, token, ...dados })
-  });
+  const timeoutMs = opts.timeoutMs || 15000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  try {
+    // POST com text/plain evita preflight CORS no Apps Script
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, token, ...dados }),
+      signal: controller.signal
+    });
 
-  const json = await resp.json();
-  if (!json.ok) throw new Error(json.erro || 'Erro na API');
-  return json.dados;
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+    const json = await resp.json();
+    if (!json.ok) throw new Error(json.erro || 'Erro na API');
+    return json.dados;
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('Servidor demorou demais (' + (timeoutMs/1000) + 's). Tente novamente.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+// Chamada com retry silencioso 1x — usada em operações críticas (lançar, salvar meta, excluir)
+async function chamarApiComRetry(action, dados = {}) {
+  ultimaOperacao = Date.now();
+  try {
+    return await chamarApi(action, dados);
+  } catch (err) {
+    const podeRetentar = /demorou demais|Failed to fetch|NetworkError|HTTP 5\d\d/i.test(err.message);
+    if (!podeRetentar) throw err;
+    // Retry silencioso — Apps Script frequentemente responde na segunda tentativa após cold start
+    return await chamarApi(action, dados);
+  }
 }
 
 /* ---------- CACHE LOCAL ---------- */
@@ -1082,7 +1111,16 @@ async function sincronizar(mostrarToast = true) {
   sincronizando = true;
   setStatus('sync', 'Sincronizando…');
   try {
-    const dados = await chamarApi('list');
+    // Sincronização usa timeout maior (20s) porque pode trazer histórico grande
+    let dados;
+    try {
+      dados = await chamarApi('list', {}, { timeoutMs: 20000 });
+    } catch (err1) {
+      // Retry silencioso 1x em caso de timeout ou erro de rede
+      const podeRetentar = /demorou demais|Failed to fetch|NetworkError|HTTP 5\d\d/i.test(err1.message);
+      if (!podeRetentar) throw err1;
+      dados = await chamarApi('list', {}, { timeoutMs: 20000 });
+    }
     estado.lancamentos = dados.lancamentos || [];
     estado.meta = dados.meta || { porMes: {} };
     estado.ultimaSinc = new Date().toISOString();
@@ -1151,7 +1189,7 @@ async function salvarMetaAtual() {
   btn.innerHTML = '<span class="spinner"></span> Salvando…';
 
   try {
-    await chamarApi('meta', { mes, ...cfg });
+    await chamarApiComRetry('meta', { mes, ...cfg });
     if (!estado.meta.porMes) estado.meta.porMes = {};
     estado.meta.porMes[mes] = cfg;
     salvarCache();
@@ -1185,7 +1223,7 @@ async function lancarCompra() {
   const lanc = { id, data, fornecedor, categoria, valor, obs, criadoEm: new Date().toISOString() };
 
   try {
-    const r = await chamarApi('add', lanc);
+    const r = await chamarApiComRetry('add', lanc);
     // Usa o id que o servidor devolveu (evita colisão em cenário de falha e retry)
     if (r && r.id) lanc.id = r.id;
     estado.lancamentos.push(lanc);
@@ -1199,7 +1237,8 @@ async function lancarCompra() {
     atualizarTudo();
     toast('Compra lançada: ' + brl(valor), 'sucesso');
   } catch (err) {
-    toast('Erro ao lançar: ' + err.message, 'erro');
+    // Não limpa os campos — usuário pode tentar de novo sem digitar tudo
+    toast('Erro ao lançar: ' + err.message + ' Aperte "Lançar" novamente.', 'erro');
   } finally {
     btn.disabled = false;
     btn.textContent = 'Lançar';
@@ -1211,7 +1250,7 @@ async function excluirLancamento(id) {
   if (!ok) return;
 
   try {
-    await chamarApi('delete', { id });
+    await chamarApiComRetry('delete', { id });
     estado.lancamentos = estado.lancamentos.filter(x => x.id !== id);
     salvarCache();
     atualizarTudo();
@@ -1605,14 +1644,21 @@ async function inicializar() {
     carregarConfigMeta();
     $('loading-inicial').style.display = 'none';
 
-    // Sincronização automática em intervalos
+    // Sincronização automática a cada 2 minutos
+    // Pula se o usuário fez alguma operação nos últimos 10s (evita competir com lançamento)
     setInterval(() => {
-      if (!document.hidden) sincronizar(false);
-    }, 60000); // a cada 60s
+      if (document.hidden) return;
+      if (Date.now() - ultimaOperacao < 10000) return;
+      sincronizar(false);
+    }, 120000);
 
-    // Sincroniza também quando o usuário volta pra aba
+    // Sincroniza também quando o usuário volta pra aba (após pelo menos 30s)
+    let ultimaVoltaAba = Date.now();
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) sincronizar(false);
+      if (document.hidden) return;
+      if (Date.now() - ultimaVoltaAba < 30000) return;
+      ultimaVoltaAba = Date.now();
+      sincronizar(false);
     });
   } else {
     setStatus('offline', 'Configurar sincronização');
