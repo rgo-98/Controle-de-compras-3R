@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    try { if (localStorage.getItem('3r_tema_v1') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}
+  </script>
   <style>
     :root {
       --azul: #17176E;
@@ -24,12 +27,54 @@
       --verde: #1B7A3C;
       --ambar: #F2B233;
       --alerta: #FF8A7A;
+      --destaque: #17176E;
+      --vermelho-texto: #CC1A1A;
+      --suave: #F4F5FB;
+      --cabeca-tabela: #F7F8FB;
+      --chip: #EEF0F7;
+      --apagado: #9A9EB5;
+      --aviso-fundo: #FFF7DD;
+      --aviso-texto: #4D3D00;
+      --veu: rgba(237, 239, 245, 0.9);
+      --toast: #15173A;
+      --foco: rgba(23, 23, 110, 0.35);
+      --foco-suave: rgba(23, 23, 110, 0.14);
+      --grafico: #17176E;
+      color-scheme: light;
       --raio: 10px;
       --fonte: 'Barlow', 'Segoe UI', Arial, sans-serif;
       --fonte-numero: 'Barlow Condensed', 'Barlow', Arial, sans-serif;
     }
 
+    :root[data-theme="dark"] {
+      --azul: #24248F;
+      --azul-fundo: #13134F;
+      --tinta: #E9EBFA;
+      --tinta-suave: #A5AACB;
+      --fundo: #0D0F24;
+      --superficie: #171A36;
+      --linha: #2E3260;
+      --linha-suave: #23274C;
+      --verde: #2FA35A;
+      --destaque: #B7BCFF;
+      --vermelho-texto: #FF8A7A;
+      --suave: #1F2347;
+      --cabeca-tabela: #1B1E40;
+      --chip: #272B55;
+      --apagado: #6F7499;
+      --aviso-fundo: #332B0C;
+      --aviso-texto: #F3E2A4;
+      --veu: rgba(13, 15, 36, 0.9);
+      --toast: #2E3260;
+      --foco: rgba(183, 188, 255, 0.5);
+      --foco-suave: rgba(183, 188, 255, 0.22);
+      --grafico: #8F96FF;
+      color-scheme: dark;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root[data-theme="dark"] .topo img { padding: 2px 6px; }
 
     body {
       font-family: var(--fonte);
@@ -43,7 +88,7 @@
     button, input, select { font-family: inherit; color: inherit; }
 
     :focus-visible {
-      outline: 3px solid rgba(23, 23, 110, 0.35);
+      outline: 3px solid var(--foco);
       outline-offset: 2px;
     }
 
@@ -63,14 +108,14 @@
       flex-wrap: wrap;
     }
 
-    .topo img { height: 46px; width: auto; display: block; }
+    .topo img { height: 46px; width: auto; display: block; background: #FFFFFF; border-radius: 8px; }
 
     .topo-titulo h1 {
       font-family: var(--fonte-numero);
       font-size: 24px;
       font-weight: 700;
       line-height: 1.1;
-      color: var(--azul);
+      color: var(--destaque);
     }
 
     .topo-titulo p { font-size: 13px; color: var(--tinta-suave); }
@@ -102,7 +147,7 @@
     }
 
     .status-sinc.online .status-dot { background: var(--verde); }
-    .status-sinc.offline { color: var(--vermelho); }
+    .status-sinc.offline { color: var(--vermelho-texto); }
     .status-sinc.offline .status-dot { background: var(--vermelho); }
     .status-sinc.sync .status-dot { background: var(--ambar); animation: pulsar 1s infinite; }
 
@@ -116,7 +161,7 @@
       border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
-      color: var(--azul);
+      color: var(--destaque);
     }
 
     .btn-icone {
@@ -127,7 +172,7 @@
       gap: 6px;
     }
 
-    .btn-icone:hover { border-color: var(--azul); background: #F4F5FB; }
+    .btn-icone:hover { border-color: var(--destaque); background: var(--suave); }
 
     .header-mes {
       display: flex;
@@ -143,7 +188,7 @@
       background: transparent;
       font-size: 14px;
       font-weight: 600;
-      color: var(--azul);
+      color: var(--destaque);
       cursor: pointer;
     }
 
@@ -287,7 +332,7 @@
 
     .painel-meta[hidden] { display: none; }
 
-    .painel-meta h2 { font-size: 17px; font-weight: 700; color: var(--azul); }
+    .painel-meta h2 { font-size: 17px; font-weight: 700; color: var(--destaque); }
     .painel-meta > p { font-size: 13px; color: var(--tinta-suave); margin: 2px 0 14px; max-width: 70ch; }
 
     .config-grid {
@@ -319,8 +364,8 @@
       background: var(--superficie);
     }
 
-    .radio-opcao input { margin: 0; width: auto; height: auto; padding: 0; accent-color: var(--azul); }
-    .radio-opcao.ativo { border-color: var(--azul); background: #F1F2FB; color: var(--azul); font-weight: 600; }
+    .radio-opcao input { margin: 0; width: auto; height: auto; padding: 0; accent-color: var(--destaque); }
+    .radio-opcao.ativo { border-color: var(--destaque); background: var(--suave); color: var(--destaque); font-weight: 600; }
 
     /* ===== Campos ===== */
     .campo { display: flex; flex-direction: column; gap: 5px; }
@@ -345,11 +390,11 @@
     .filtros input:focus,
     .filtros select:focus {
       outline: none;
-      border-color: var(--azul);
-      box-shadow: 0 0 0 3px rgba(23, 23, 110, 0.14);
+      border-color: var(--destaque);
+      box-shadow: 0 0 0 3px var(--foco-suave);
     }
 
-    .campo input::placeholder, .filtros input::placeholder { color: #9A9EB5; }
+    .campo input::placeholder, .filtros input::placeholder { color: var(--apagado); }
     .campo .dica { font-size: 12px; color: var(--tinta-suave); }
 
     /* ===== Botões ===== */
@@ -376,8 +421,8 @@
     .btn-secondary { background: var(--azul); color: #FFFFFF; }
     .btn-secondary:hover:not(:disabled) { background: var(--azul-fundo); }
 
-    .btn-outline { background: var(--superficie); color: var(--azul); border-color: var(--linha); }
-    .btn-outline:hover:not(:disabled) { border-color: var(--azul); background: #F4F5FB; }
+    .btn-outline { background: var(--superficie); color: var(--destaque); border-color: var(--linha); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--destaque); background: var(--suave); }
 
     .btn-danger {
       height: 30px;
@@ -388,7 +433,7 @@
       border-color: transparent;
     }
 
-    .btn-danger:hover:not(:disabled) { color: var(--vermelho); border-color: var(--vermelho); }
+    .btn-danger:hover:not(:disabled) { color: var(--vermelho-texto); border-color: var(--vermelho-texto); }
 
     .spinner {
       width: 15px;
@@ -399,7 +444,7 @@
       animation: girar 0.6s linear infinite;
     }
 
-    .btn-outline .spinner { border-color: rgba(23, 23, 110, 0.2); border-top-color: var(--azul); }
+    .btn-outline .spinner { border-color: var(--linha); border-top-color: var(--destaque); }
 
     /* ===== Trabalho do dia: lançar + lista ===== */
     .trabalho {
@@ -419,7 +464,7 @@
     .bloco-titulo {
       font-size: 17px;
       font-weight: 700;
-      color: var(--azul);
+      color: var(--destaque);
       padding: 16px 20px 0;
     }
 
@@ -463,7 +508,7 @@
       font-size: 13px;
       font-weight: 600;
       color: var(--tinta-suave);
-      background: #F7F8FB;
+      background: var(--cabeca-tabela);
       border-bottom: 1px solid var(--linha);
       white-space: nowrap;
     }
@@ -477,9 +522,9 @@
       vertical-align: middle;
     }
 
-    tbody tr:hover { background: #F7F8FC; }
+    tbody tr:hover { background: var(--suave); }
     tbody td:first-child { color: var(--tinta-suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
-    tbody td:nth-child(4) { color: var(--tinta-suave); }
+    tbody td:nth-child(3) { color: var(--tinta-suave); }
     tbody td.num { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
     tbody td.centro { text-align: right; padding-right: 12px; }
 
@@ -489,24 +534,11 @@
     tfoot td {
       padding: 12px;
       font-weight: 700;
-      border-top: 2px solid var(--azul);
-      color: var(--azul);
+      border-top: 2px solid var(--destaque);
+      color: var(--destaque);
     }
 
     tfoot td.num { font-family: var(--fonte-numero); font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 9px;
-      background: #EEF0F7;
-      color: #3B3F63;
-      border-radius: 100px;
-      font-size: 12px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .sub-categoria { display: none; font-size: 12px; color: var(--tinta-suave); }
 
     .acoes-bar { padding: 12px 20px; display: flex; justify-content: flex-end; }
     .acoes-bar .btn { height: 36px; font-size: 14px; padding: 0 14px; }
@@ -527,7 +559,7 @@
       position: fixed;
       bottom: 22px;
       right: 22px;
-      background: var(--tinta);
+      background: var(--toast);
       color: #FFFFFF;
       padding: 13px 18px;
       border-radius: 8px;
@@ -569,23 +601,23 @@
       overflow-y: auto;
     }
 
-    .modal h3 { font-size: 20px; font-weight: 700; color: var(--azul); margin-bottom: 6px; }
+    .modal h3 { font-size: 20px; font-weight: 700; color: var(--destaque); margin-bottom: 6px; }
     .modal p { font-size: 14px; color: var(--tinta-suave); margin-bottom: 16px; }
     .modal .campo { margin-bottom: 14px; }
     .modal-acoes { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
 
     .modal-info {
-      background: #FFF7DD;
+      background: var(--aviso-fundo);
       border-left: 4px solid var(--ambar);
       border-radius: 6px;
       padding: 11px 14px;
       margin-bottom: 16px;
       font-size: 13px;
-      color: #4D3D00;
+      color: var(--aviso-texto);
     }
 
     .modal code {
-      background: #EEF0F7;
+      background: var(--chip);
       padding: 1px 5px;
       border-radius: 4px;
       font-size: 12px;
@@ -594,22 +626,22 @@
     .loading-inicial {
       position: fixed;
       inset: 0;
-      background: rgba(237, 239, 245, 0.9);
+      background: var(--veu);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 14px;
       z-index: 998;
-      color: var(--azul);
+      color: var(--destaque);
       font-weight: 600;
     }
 
     .spinner-grande {
       width: 38px;
       height: 38px;
-      border: 4px solid rgba(23, 23, 110, 0.15);
-      border-top-color: var(--azul);
+      border: 4px solid var(--linha);
+      border-top-color: var(--destaque);
       border-radius: 50%;
       animation: girar 0.8s linear infinite;
     }
@@ -645,11 +677,8 @@
       .saldo-numeros { grid-template-columns: 1fr 1fr; gap: 12px 24px; }
       .saldo-numeros dd { font-size: 22px; }
       .lista-cabeca { padding: 14px 16px; }
-      .filtros input { width: 100%; flex: 1 1 100%; }
-      .filtros select { flex: 1; }
-      thead th:nth-child(3), tbody tr:not(.vazio) td:nth-child(3),
-      thead th:nth-child(4), tbody tr:not(.vazio) td:nth-child(4) { display: none; }
-      .sub-categoria { display: block; }
+      .filtros input { width: auto; flex: 1; }
+      thead th:nth-child(3), tbody tr:not(.vazio) td:nth-child(3) { display: none; }
       thead th:first-child, tbody td:first-child, tfoot td:first-child { padding-left: 16px; }
       .toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
     }
@@ -679,6 +708,7 @@
           <label for="mes-ativo">Mês</label>
           <input type="month" id="mes-ativo" />
         </div>
+        <button class="btn-icone" id="btn-tema">Modo escuro</button>
         <button class="btn-icone" id="btn-config" title="Configurar a ligação com a planilha" aria-label="Configurar sincronização">⚙</button>
       </div>
     </div>
@@ -773,26 +803,13 @@
             <input type="text" id="l-fornecedor" placeholder="Ex.: Fortlev, Tigre, Gerdau" list="lista-fornecedores" autocomplete="off" />
             <datalist id="lista-fornecedores"></datalist>
           </div>
-          <div class="campo campo-largo">
+          <div class="campo">
             <label for="l-valor">Valor (R$)</label>
             <input type="number" id="l-valor" step="0.01" min="0" placeholder="0,00" inputmode="decimal" />
           </div>
           <div class="campo">
             <label for="l-data">Data da compra</label>
             <input type="date" id="l-data" />
-          </div>
-          <div class="campo">
-            <label for="l-categoria">Categoria</label>
-            <select id="l-categoria">
-              <option value="Material Básico">Material Básico</option>
-              <option value="Acabamento">Acabamento</option>
-              <option value="Elétrica">Elétrica</option>
-              <option value="Hidráulica">Hidráulica</option>
-              <option value="Tintas">Tintas</option>
-              <option value="Ferragens">Ferragens</option>
-              <option value="Ferramentas">Ferramentas</option>
-              <option value="Outros">Outros</option>
-            </select>
           </div>
           <div class="campo campo-largo">
             <label for="l-obs">Observação (opcional)</label>
@@ -807,9 +824,6 @@
           <h2 class="bloco-titulo">Lançamentos do mês</h2>
           <div class="filtros">
             <input type="text" id="filtro-fornecedor" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor" />
-            <select id="filtro-categoria" aria-label="Filtrar por categoria">
-              <option value="">Todas as categorias</option>
-            </select>
             <button class="btn btn-outline" id="btn-limpar-filtros">Limpar</button>
           </div>
         </div>
@@ -820,7 +834,6 @@
               <tr>
                 <th>Data</th>
                 <th>Fornecedor</th>
-                <th>Categoria</th>
                 <th>Observação</th>
                 <th class="num">Valor</th>
                 <th><span style="position:absolute;left:-9999px">Ação</span></th>
@@ -829,7 +842,7 @@
             <tbody id="tbody-lancamentos"></tbody>
             <tfoot>
               <tr>
-                <td colspan="4">Total do mês</td>
+                <td colspan="3">Total do mês</td>
                 <td class="num" id="tfoot-total">R$ 0,00</td>
                 <td></td>
               </tr>
@@ -1149,7 +1162,7 @@ async function salvarMetaAtual() {
 async function lancarCompra() {
   const data = $('l-data').value;
   const fornecedor = $('l-fornecedor').value.trim();
-  const categoria = $('l-categoria').value;
+  const categoria = ''; // campo retirado da tela; a coluna segue na planilha
   const valor = parseFloat($('l-valor').value);
   const obs = $('l-obs').value.trim();
 
@@ -1212,10 +1225,8 @@ function getLancamentosDoMes() {
 
 function getLancamentosFiltrados() {
   const fornecedor = $('filtro-fornecedor').value.toLowerCase().trim();
-  const categoria  = $('filtro-categoria').value;
   return getLancamentosDoMes().filter(l => {
     if (fornecedor && !l.fornecedor.toLowerCase().includes(fornecedor)) return false;
-    if (categoria && l.categoria !== categoria) return false;
     return true;
   });
 }
@@ -1225,7 +1236,6 @@ function atualizarTudo() {
   atualizarDashboard();
   renderTabela();
   atualizarDatalistFornecedores();
-  atualizarFiltroCategorias();
   renderGraficos();
 }
 
@@ -1336,7 +1346,7 @@ function renderTabela() {
   tbody.innerHTML = '';
 
   if (compras.length === 0) {
-    tbody.innerHTML = '<tr class="vazio"><td colspan="6">Nenhuma compra lançada neste mês. Preencha fornecedor e valor em "Lançar compra".</td></tr>';
+    tbody.innerHTML = '<tr class="vazio"><td colspan="5">Nenhuma compra lançada neste mês. Preencha fornecedor e valor em "Lançar compra".</td></tr>';
     $('tfoot-total').textContent = brl(0);
     return;
   }
@@ -1347,8 +1357,7 @@ function renderTabela() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${formatarData(l.data)}</td>
-      <td><strong>${escapeHtml(l.fornecedor)}</strong><span class="sub-categoria">${escapeHtml(l.categoria)}</span></td>
-      <td><span class="badge">${escapeHtml(l.categoria)}</span></td>
+      <td><strong>${escapeHtml(l.fornecedor)}</strong></td>
       <td>${escapeHtml(l.obs || '—')}</td>
       <td class="num">${brl(l.valor)}</td>
       <td class="centro">
@@ -1377,23 +1386,25 @@ function atualizarDatalistFornecedores() {
   });
 }
 
-function atualizarFiltroCategorias() {
-  const sel = $('filtro-categoria');
-  const atual = sel.value;
-  const set = new Set();
-  getLancamentosDoMes().forEach(l => l.categoria && set.add(l.categoria));
-
-  sel.innerHTML = '<option value="">Todas as categorias</option>';
-  [...set].sort().forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
-    if (c === atual) opt.selected = true;
-    sel.appendChild(opt);
-  });
+/* ---------- GRÁFICOS ---------- */
+function corDoTema(nome) {
+  return getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
 }
 
-/* ---------- GRÁFICOS ---------- */
+function atualizarBotaoTema() {
+  const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
+  $('btn-tema').textContent = escuro ? 'Modo claro' : 'Modo escuro';
+}
+
+function alternarTema() {
+  const escuro = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (escuro) document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', 'dark');
+  try { localStorage.setItem('3r_tema_v1', escuro ? 'light' : 'dark'); } catch (e) {}
+  atualizarBotaoTema();
+  renderGraficos();
+}
+
 function renderGraficos() {
   Chart.defaults.font.family = "'Barlow', 'Segoe UI', Arial, sans-serif";
   const compras = getLancamentosDoMes();
@@ -1416,7 +1427,7 @@ function renderGraficos() {
       datasets: [{
         label: 'R$ em compras',
         data: porDia,
-        backgroundColor: '#17176E',
+        backgroundColor: corDoTema('--grafico'),
         borderRadius: 3,
       }]
     },
@@ -1432,11 +1443,11 @@ function renderGraficos() {
         }
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: '#5B5F7A', font: { size: 12 } } },
+        x: { grid: { display: false }, ticks: { color: corDoTema('--tinta-suave'), font: { size: 12 } } },
         y: {
           beginAtZero: true,
-          grid: { color: '#E9EBF2' },
-          ticks: { color: '#5B5F7A', font: { size: 12 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
+          grid: { color: corDoTema('--linha-suave') },
+          ticks: { color: corDoTema('--tinta-suave'), font: { size: 12 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
         }
       }
     }
@@ -1456,7 +1467,7 @@ function renderGraficos() {
       datasets: [{
         label: 'R$',
         data: top.map(x => x[1]),
-        backgroundColor: '#17176E',
+        backgroundColor: corDoTema('--grafico'),
         borderRadius: 3,
       }]
     },
@@ -1470,10 +1481,10 @@ function renderGraficos() {
       scales: {
         x: {
           beginAtZero: true,
-          grid: { color: '#E9EBF2' },
-          ticks: { color: '#5B5F7A', font: { size: 12 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
+          grid: { color: corDoTema('--linha-suave') },
+          ticks: { color: corDoTema('--tinta-suave'), font: { size: 12 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
         },
-        y: { grid: { display: false }, ticks: { color: '#15173A', font: { size: 13, weight: 600 } } }
+        y: { grid: { display: false }, ticks: { color: corDoTema('--tinta'), font: { size: 13, weight: 600 } } }
       }
     }
   });
@@ -1484,11 +1495,10 @@ function exportarCSV() {
   const compras = getLancamentosDoMes();
   if (compras.length === 0) return toast('Nada para exportar neste mês', 'erro');
 
-  const cab = ['Data', 'Fornecedor', 'Categoria', 'Valor', 'Observação'];
+  const cab = ['Data', 'Fornecedor', 'Valor', 'Observação'];
   const linhas = compras.map(l => [
     formatarData(l.data),
     l.fornecedor,
-    l.categoria,
     Number(l.valor).toFixed(2).replace('.', ','),
     l.obs || ''
   ]);
@@ -1612,6 +1622,8 @@ async function inicializar() {
   // Data hoje
   $('l-data').value = dataLocalISO();
 
+  $('btn-tema').addEventListener('click', alternarTema);
+  atualizarBotaoTema();
   $('btn-ajustar-meta').addEventListener('click', () => { painelMetaAutomatico = false; abrirPainelMeta($('painel-meta').hidden); });
 
   // Meta
@@ -1630,10 +1642,8 @@ async function inicializar() {
 
   // Filtros
   $('filtro-fornecedor').addEventListener('input', renderTabela);
-  $('filtro-categoria').addEventListener('change', renderTabela);
   $('btn-limpar-filtros').addEventListener('click', () => {
     $('filtro-fornecedor').value = '';
-    $('filtro-categoria').value = '';
     renderTabela();
   });
 
