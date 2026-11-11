@@ -678,7 +678,7 @@
       .saldo-numeros dd { font-size: 22px; }
       .lista-cabeca { padding: 14px 16px; }
       .filtros input { width: auto; flex: 1; }
-      thead th:nth-child(3), tbody tr:not(.vazio) td:nth-child(3) { display: none; }
+      thead th:nth-child(3), tbody tr:not(.vazio) td:nth-child(3), tfoot td.col-obs { display: none; }
       thead th:first-child, tbody td:first-child, tfoot td:first-child { padding-left: 16px; }
       .toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
     }
@@ -842,7 +842,8 @@
             <tbody id="tbody-lancamentos"></tbody>
             <tfoot>
               <tr>
-                <td colspan="3">Total do mês</td>
+                <td colspan="2">Total do mês</td>
+                <td class="col-obs"></td>
                 <td class="num" id="tfoot-total">R$ 0,00</td>
                 <td></td>
               </tr>
