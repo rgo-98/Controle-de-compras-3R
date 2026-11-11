@@ -5,119 +5,138 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Controle de Compras - 3R Materiais</title>
   <link rel="icon" type="image/jpeg" href="logo.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
+      --azul: #17176E;
+      --azul-fundo: #101052;
       --vermelho: #CC1A1A;
-      --vermelho-escuro: #A01414;
-      --azul: #1A1A7A;
-      --azul-escuro: #12125A;
-      --azul-claro: #2E75B6;
-      --cinza-bg: #F4F5F7;
-      --cinza-card: #FFFFFF;
-      --cinza-borda: #E1E4E8;
-      --cinza-texto: #4A4A4A;
-      --cinza-suave: #6B7280;
-      --verde: #1F7A1F;
-      --amarelo: #C48A00;
-      --sombra: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --vermelho-escuro: #A31212;
+      --tinta: #15173A;
+      --tinta-suave: #5B5F7A;
+      --fundo: #EDEFF5;
+      --superficie: #FFFFFF;
+      --linha: #D9DCE8;
+      --linha-suave: #E9EBF2;
+      --verde: #1B7A3C;
+      --ambar: #F2B233;
+      --alerta: #FF8A7A;
+      --raio: 10px;
+      --fonte: 'Barlow', 'Segoe UI', Arial, sans-serif;
+      --fonte-numero: 'Barlow Condensed', 'Barlow', Arial, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--cinza-bg);
-      color: #1A1A1A;
-      line-height: 1.5;
+      font-family: var(--fonte);
+      background: var(--fundo);
+      color: var(--tinta);
+      font-size: 15px;
+      line-height: 1.45;
       min-height: 100vh;
     }
 
-    /* ===== HEADER ===== */
-    header {
-      background: #FFFFFF;
-      border-bottom: 4px solid var(--vermelho);
-      padding: 16px 24px;
+    button, input, select { font-family: inherit; color: inherit; }
+
+    :focus-visible {
+      outline: 3px solid rgba(23, 23, 110, 0.35);
+      outline-offset: 2px;
+    }
+
+    /* ===== Cabeçalho ===== */
+    .topo {
+      background: var(--superficie);
+      border-bottom: 3px solid var(--vermelho);
+    }
+
+    .topo-interno {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 10px 24px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      box-shadow: var(--sombra);
+      gap: 14px;
       flex-wrap: wrap;
     }
 
-    header img {
-      height: 56px;
-      width: auto;
-    }
+    .topo img { height: 46px; width: auto; display: block; }
 
-    .header-titulo h1 {
-      font-size: 20px;
-      color: var(--azul);
+    .topo-titulo h1 {
+      font-family: var(--fonte-numero);
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: -0.2px;
+      line-height: 1.1;
+      color: var(--azul);
     }
 
-    .header-titulo p {
-      font-size: 12px;
-      color: var(--cinza-suave);
-      margin-top: 2px;
-    }
+    .topo-titulo p { font-size: 13px; color: var(--tinta-suave); }
 
-    .header-acoes {
+    .topo-acoes {
       margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .status-sinc {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--cinza-suave);
-      padding: 6px 10px;
-      background: var(--cinza-bg);
-      border-radius: 6px;
-      font-weight: 600;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--tinta-suave);
+      padding: 0 6px;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: var(--cinza-suave);
+      background: #A9ADC2;
+      flex: none;
     }
 
     .status-sinc.online .status-dot { background: var(--verde); }
+    .status-sinc.offline { color: var(--vermelho); }
     .status-sinc.offline .status-dot { background: var(--vermelho); }
-    .status-sinc.sync .status-dot {
-      background: var(--amarelo);
-      animation: pulse 1s infinite;
+    .status-sinc.sync .status-dot { background: var(--ambar); animation: pulsar 1s infinite; }
+
+    @keyframes pulsar { 50% { opacity: 0.3; } }
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    .btn-icone, .header-mes {
+      height: 38px;
+      background: var(--superficie);
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--azul);
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    .btn-icone {
+      padding: 0 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    .btn-icone:hover { border-color: var(--azul); background: #F4F5FB; }
 
     .header-mes {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: var(--cinza-bg);
-      padding: 8px 14px;
-      border-radius: 6px;
-      border: 1px solid var(--cinza-borda);
+      gap: 6px;
+      padding: 0 10px;
     }
 
-    .header-mes label {
-      font-size: 12px;
-      color: var(--cinza-suave);
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+    .header-mes label { font-weight: 500; color: var(--tinta-suave); }
 
     .header-mes input {
       border: none;
@@ -126,468 +145,411 @@
       font-weight: 600;
       color: var(--azul);
       cursor: pointer;
-      font-family: inherit;
     }
 
-    .btn-icone {
-      background: #FFF;
-      border: 1px solid var(--cinza-borda);
-      border-radius: 6px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--azul);
-      font-weight: 600;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-icone:hover {
-      background: var(--azul);
-      color: #FFF;
-      border-color: var(--azul);
-    }
-
-    /* ===== MAIN ===== */
+    /* ===== Área principal ===== */
     main {
-      max-width: 1280px;
-      margin: 24px auto;
-      padding: 0 24px 48px;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 20px 24px 40px;
     }
 
-    /* ===== SECTION ===== */
-    .secao {
-      background: var(--cinza-card);
-      border-radius: 8px;
-      border: 1px solid var(--cinza-borda);
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-
-    .secao-titulo {
+    /* ===== Painel do saldo ===== */
+    .saldo {
       background: var(--azul);
       color: #FFFFFF;
-      padding: 10px 20px;
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      border-radius: 14px;
+      padding: 26px 30px 24px;
     }
 
-    .secao-titulo.vermelho { background: var(--vermelho); }
-
-    .secao-corpo { padding: 20px; }
-
-    /* ===== CONFIG META ===== */
-    .config-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    .saldo-cabeca {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
       gap: 16px;
     }
 
-    .campo {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    .saldo-rotulo { font-size: 16px; font-weight: 500; color: #C9CCF2; }
+
+    .saldo-valor {
+      font-family: var(--fonte-numero);
+      font-weight: 700;
+      font-size: clamp(46px, 8.4vw, 92px);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+      margin-top: 4px;
     }
 
-    .campo label {
+    .saldo.estado-atencao .saldo-valor { color: var(--ambar); }
+    .saldo.estado-estourado .saldo-valor { color: var(--alerta); }
+
+    .btn-meta {
+      flex: none;
+      height: 38px;
+      padding: 0 14px;
+      background: transparent;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-meta:hover { background: rgba(255, 255, 255, 0.12); border-color: #FFFFFF; }
+    .btn-meta:focus-visible { outline-color: #FFFFFF; }
+
+    /* Régua da meta */
+    .regua { margin-top: 22px; position: relative; padding-top: 22px; }
+
+    .regua-trilho {
+      height: 16px;
+      background: var(--azul-fundo);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .barra-preenchimento {
+      height: 100%;
+      background: #FFFFFF;
+      border-radius: 4px 0 0 4px;
+      transition: width 0.4s;
+    }
+
+    .barra-preenchimento.amarelo { background: var(--ambar); }
+    .barra-preenchimento.vermelho { background: var(--alerta); }
+
+    .regua-hoje {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      border-left: 2px solid #FFFFFF;
+    }
+
+    .regua-hoje span {
+      position: absolute;
+      top: -3px;
+      left: 6px;
       font-size: 12px;
       font-weight: 600;
-      color: var(--cinza-texto);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
+      white-space: nowrap;
+      color: #FFFFFF;
     }
 
-    .campo input,
-    .campo select,
-    .campo textarea {
-      padding: 10px 12px;
-      border: 1px solid var(--cinza-borda);
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-      background: #FFF;
-      color: #1A1A1A;
-      transition: border-color 0.15s, box-shadow 0.15s;
+    .regua-hoje.vira span { left: auto; right: 6px; }
+
+    .saldo-numeros {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      justify-content: start;
+      gap: 6px 44px;
+      margin-top: 18px;
     }
 
-    .campo input:focus,
-    .campo select:focus,
-    .campo textarea:focus {
-      outline: none;
-      border-color: var(--azul);
-      box-shadow: 0 0 0 3px rgba(26,26,122,0.12);
+    .saldo-numeros dt { font-size: 13px; color: #C9CCF2; }
+
+    .saldo-numeros dd {
+      font-family: var(--fonte-numero);
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
     }
 
-    .campo .dica {
-      font-size: 11px;
-      color: var(--cinza-suave);
+    .saldo-numeros small {
+      display: block;
+      font-family: var(--fonte);
+      font-size: 12px;
+      font-weight: 400;
+      color: #C9CCF2;
     }
 
-    .radio-grupo {
+    .saldo-ritmo {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #E4E6FA;
+      max-width: 78ch;
+    }
+
+    .saldo-ritmo:empty { display: none; }
+    .saldo-ritmo strong { color: #FFFFFF; font-weight: 600; }
+
+    /* ===== Painel de ajuste da meta ===== */
+    .painel-meta {
+      background: var(--superficie);
+      border: 1px solid var(--linha);
+      border-radius: var(--raio);
+      padding: 20px 22px;
+      margin-top: 12px;
+    }
+
+    .painel-meta[hidden] { display: none; }
+
+    .painel-meta h2 { font-size: 17px; font-weight: 700; color: var(--azul); }
+    .painel-meta > p { font-size: 13px; color: var(--tinta-suave); margin: 2px 0 14px; max-width: 70ch; }
+
+    .config-grid {
       display: flex;
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 14px 16px;
+      align-items: flex-end;
     }
+
+    .config-grid .campo { flex: 1 1 180px; }
+    .config-grid .campo-tipo { flex: 1 1 100%; }
+    .config-grid .campo-acao { flex: 0 0 auto; }
+
+    .radio-grupo { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .radio-opcao {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       padding: 8px 14px;
-      border: 1px solid var(--cinza-borda);
-      border-radius: 6px;
+      border: 1px solid var(--linha);
+      border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
-      background: #FFF;
-      transition: all 0.15s;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--tinta);
+      background: var(--superficie);
     }
 
-    .radio-opcao:hover { border-color: var(--azul); }
+    .radio-opcao input { margin: 0; width: auto; height: auto; padding: 0; accent-color: var(--azul); }
+    .radio-opcao.ativo { border-color: var(--azul); background: #F1F2FB; color: var(--azul); font-weight: 600; }
 
-    .radio-opcao input {
-      margin: 0;
-      accent-color: var(--vermelho);
+    /* ===== Campos ===== */
+    .campo { display: flex; flex-direction: column; gap: 5px; }
+
+    .campo label { font-size: 13px; font-weight: 600; color: var(--tinta); }
+
+    .campo input,
+    .campo select,
+    .filtros input,
+    .filtros select {
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      font-size: 15px;
+      background: var(--superficie);
+      width: 100%;
     }
 
-    .radio-opcao.ativo {
-      background: rgba(26,26,122,0.06);
+    .campo input:focus,
+    .campo select:focus,
+    .filtros input:focus,
+    .filtros select:focus {
+      outline: none;
       border-color: var(--azul);
-      color: var(--azul);
-      font-weight: 600;
+      box-shadow: 0 0 0 3px rgba(23, 23, 110, 0.14);
     }
 
-    /* ===== BOTÕES ===== */
+    .campo input::placeholder, .filtros input::placeholder { color: #9A9EB5; }
+    .campo .dica { font-size: 12px; color: var(--tinta-suave); }
+
+    /* ===== Botões ===== */
     .btn {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
+      height: 42px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
+      white-space: nowrap;
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    .btn-primary { background: var(--vermelho); color: #FFF; }
+    .btn-primary { background: var(--vermelho); color: #FFFFFF; }
     .btn-primary:hover:not(:disabled) { background: var(--vermelho-escuro); }
 
-    .btn-secondary { background: var(--azul); color: #FFF; }
-    .btn-secondary:hover:not(:disabled) { background: var(--azul-escuro); }
+    .btn-secondary { background: var(--azul); color: #FFFFFF; }
+    .btn-secondary:hover:not(:disabled) { background: var(--azul-fundo); }
 
-    .btn-outline {
-      background: #FFF;
-      color: var(--azul);
-      border: 1px solid var(--azul);
-    }
-    .btn-outline:hover:not(:disabled) {
-      background: var(--azul);
-      color: #FFF;
-    }
+    .btn-outline { background: var(--superficie); color: var(--azul); border-color: var(--linha); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--azul); background: #F4F5FB; }
 
     .btn-danger {
-      background: #FFF;
-      color: var(--vermelho);
-      border: 1px solid var(--vermelho);
-      padding: 6px 12px;
-      font-size: 12px;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 13px;
+      background: transparent;
+      color: var(--tinta-suave);
+      border-color: transparent;
     }
-    .btn-danger:hover:not(:disabled) {
-      background: var(--vermelho);
-      color: #FFF;
-    }
+
+    .btn-danger:hover:not(:disabled) { color: var(--vermelho); border-color: var(--vermelho); }
 
     .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #FFF;
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #FFFFFF;
       border-radius: 50%;
-      animation: spin 0.6s linear infinite;
+      animation: girar 0.6s linear infinite;
     }
 
-    .btn-outline .spinner {
-      border: 2px solid rgba(26,26,122,0.2);
-      border-top-color: var(--azul);
-    }
+    .btn-outline .spinner { border-color: rgba(23, 23, 110, 0.2); border-top-color: var(--azul); }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* ===== DASHBOARD CARDS ===== */
-    .cards-grid {
+    /* ===== Trabalho do dia: lançar + lista ===== */
+    .trabalho {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: 340px minmax(0, 1fr);
       gap: 16px;
-      margin-bottom: 20px;
+      align-items: start;
+      margin-top: 16px;
     }
 
-    .card {
-      background: #FFF;
-      border-radius: 8px;
-      border: 1px solid var(--cinza-borda);
-      padding: 18px 20px;
-      border-left: 4px solid var(--azul);
-      position: relative;
+    .bloco {
+      background: var(--superficie);
+      border: 1px solid var(--linha);
+      border-radius: var(--raio);
     }
 
-    .card.destaque-vermelho { border-left-color: var(--vermelho); }
-    .card.destaque-verde { border-left-color: var(--verde); }
-    .card.destaque-amarelo { border-left-color: var(--amarelo); }
-
-    .card-titulo {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--cinza-suave);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .card-valor {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1A1A1A;
-      letter-spacing: -0.5px;
-    }
-
-    .card-sub {
-      font-size: 12px;
-      color: var(--cinza-suave);
-      margin-top: 4px;
-    }
-
-    .card.verde .card-valor { color: var(--verde); }
-    .card.vermelho .card-valor { color: var(--vermelho); }
-    .card.amarelo .card-valor { color: var(--amarelo); }
-
-    /* ===== BARRA DE PROGRESSO ===== */
-    .barra-container {
-      background: var(--cinza-bg);
-      border-radius: 100px;
-      height: 10px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-
-    .barra-preenchimento {
-      background: var(--azul);
-      height: 100%;
-      border-radius: 100px;
-      transition: width 0.4s, background 0.3s;
-    }
-
-    .barra-preenchimento.amarelo { background: var(--amarelo); }
-    .barra-preenchimento.vermelho { background: var(--vermelho); }
-
-    /* ===== FORMULÁRIO LANÇAMENTO ===== */
-    .form-lancamento {
-      display: grid;
-      grid-template-columns: 130px 1fr 160px 160px 110px;
-      gap: 12px;
-      align-items: end;
-    }
-
-    .form-lancamento .campo-full { grid-column: 1 / -1; }
-
-    .btn-lancar { height: 42px; }
-
-    /* ===== FILTROS ===== */
-    .filtros {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-      padding: 16px 20px;
-      background: var(--cinza-bg);
-      border-bottom: 1px solid var(--cinza-borda);
-    }
-
-    .filtros input,
-    .filtros select {
-      padding: 8px 12px;
-      border: 1px solid var(--cinza-borda);
-      border-radius: 6px;
-      font-size: 13px;
-      background: #FFF;
-      font-family: inherit;
-    }
-
-    .filtros label {
-      font-size: 12px;
-      color: var(--cinza-suave);
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    /* ===== TABELA ===== */
-    .tabela-wrapper { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    thead { background: var(--cinza-bg); }
-
-    thead th {
-      padding: 12px 16px;
-      text-align: left;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--cinza-texto);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid var(--cinza-borda);
-    }
-
-    thead th.num { text-align: right; }
-    thead th.centro { text-align: center; }
-
-    tbody tr {
-      border-bottom: 1px solid var(--cinza-borda);
-      transition: background 0.1s;
-    }
-
-    tbody tr:hover { background: rgba(26,26,122,0.03); }
-
-    tbody td {
-      padding: 12px 16px;
-      color: #1A1A1A;
-    }
-
-    tbody td.num {
-      text-align: right;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-    }
-
-    tbody td.centro { text-align: center; }
-
-    tbody tr.vazio td {
-      text-align: center;
-      color: var(--cinza-suave);
-      padding: 32px 16px;
-      font-style: italic;
-    }
-
-    tfoot {
-      background: var(--azul);
-      color: #FFF;
-    }
-
-    tfoot td {
-      padding: 12px 16px;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    tfoot td.num {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ===== BADGE ===== */
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      background: var(--cinza-bg);
-      color: var(--cinza-texto);
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    /* ===== GRÁFICOS ===== */
-    .graficos-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .grafico-box {
-      background: #FFF;
-      border: 1px solid var(--cinza-borda);
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .grafico-titulo {
-      font-size: 13px;
+    .bloco-titulo {
+      font-size: 17px;
       font-weight: 700;
       color: var(--azul);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--cinza-borda);
+      padding: 16px 20px 0;
     }
 
-    .grafico-canvas {
-      position: relative;
-      height: 260px;
+    .lancar { position: sticky; top: 16px; border-top: 4px solid var(--vermelho); }
+
+    .form-lancamento {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 14px 20px 20px;
     }
 
-    /* ===== AÇÕES ===== */
-    .acoes-bar {
+    .form-lancamento .campo-largo { grid-column: 1 / -1; }
+    .form-lancamento .btn-lancar { grid-column: 1 / -1; height: 46px; font-size: 16px; }
+
+    #l-valor { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .lista-cabeca {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       flex-wrap: wrap;
-      padding: 16px 20px;
-      background: var(--cinza-bg);
-      border-top: 1px solid var(--cinza-borda);
+      padding: 14px 20px;
     }
 
-    /* ===== TOAST ===== */
+    .lista-cabeca .bloco-titulo { padding: 0; }
+
+    .filtros { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filtros input, .filtros select { height: 36px; font-size: 14px; width: auto; }
+    .filtros input { width: 170px; }
+    .filtros .btn { height: 36px; padding: 0 12px; font-size: 14px; }
+
+    .tabela-wrapper { overflow-x: auto; border-top: 1px solid var(--linha); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+    thead th {
+      padding: 9px 12px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--tinta-suave);
+      background: #F7F8FB;
+      border-bottom: 1px solid var(--linha);
+      white-space: nowrap;
+    }
+
+    thead th:first-child, tbody td:first-child, tfoot td:first-child { padding-left: 20px; }
+    thead th.num, tbody td.num, tfoot td.num { text-align: right; }
+
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--linha-suave);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background: #F7F8FC; }
+    tbody td:first-child { color: var(--tinta-suave); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    tbody td:nth-child(4) { color: var(--tinta-suave); }
+    tbody td.num { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    tbody td.centro { text-align: right; padding-right: 12px; }
+
+    tbody tr.vazio:hover { background: transparent; }
+    tbody tr.vazio td { text-align: center; color: var(--tinta-suave); padding: 36px 20px; white-space: normal; }
+
+    tfoot td {
+      padding: 12px;
+      font-weight: 700;
+      border-top: 2px solid var(--azul);
+      color: var(--azul);
+    }
+
+    tfoot td.num { font-family: var(--fonte-numero); font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      background: #EEF0F7;
+      color: #3B3F63;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .sub-categoria { display: none; font-size: 12px; color: var(--tinta-suave); }
+
+    .acoes-bar { padding: 12px 20px; display: flex; justify-content: flex-end; }
+    .acoes-bar .btn { height: 36px; font-size: 14px; padding: 0 14px; }
+
+    /* ===== Gráficos ===== */
+    .graficos-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .grafico-box { padding-bottom: 16px; }
+    .grafico-canvas { position: relative; height: 250px; margin: 12px 20px 0; }
+
+    /* ===== Aviso (toast) ===== */
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--azul);
-      color: #FFF;
-      padding: 14px 20px;
-      border-radius: 6px;
+      bottom: 22px;
+      right: 22px;
+      background: var(--tinta);
+      color: #FFFFFF;
+      padding: 13px 18px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      transform: translateY(100px);
+      box-shadow: 0 8px 24px rgba(16, 16, 82, 0.28);
+      transform: translateY(90px);
       opacity: 0;
-      transition: all 0.3s;
+      transition: transform 0.25s, opacity 0.25s;
       z-index: 1000;
-      max-width: 90vw;
+      max-width: min(420px, 90vw);
     }
 
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
+    .toast.show { transform: translateY(0); opacity: 1; }
     .toast.sucesso { background: var(--verde); }
     .toast.erro { background: var(--vermelho); }
 
-    /* ===== MODAL ===== */
+    /* ===== Janelas ===== */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(16, 16, 82, 0.55);
       display: none;
       align-items: center;
       justify-content: center;
@@ -598,233 +560,226 @@
     .modal-overlay.show { display: flex; }
 
     .modal {
-      background: #FFF;
-      border-radius: 8px;
+      background: var(--superficie);
+      border-radius: 12px;
       padding: 24px;
-      max-width: 560px;
+      max-width: 540px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
     }
 
-    .modal h3 {
-      color: var(--azul);
-      margin-bottom: 12px;
-      font-size: 18px;
-    }
-
-    .modal p {
-      color: var(--cinza-texto);
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-
-    .modal .campo {
-      margin-bottom: 16px;
-    }
-
-    .modal-acoes {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
+    .modal h3 { font-size: 20px; font-weight: 700; color: var(--azul); margin-bottom: 6px; }
+    .modal p { font-size: 14px; color: var(--tinta-suave); margin-bottom: 16px; }
+    .modal .campo { margin-bottom: 14px; }
+    .modal-acoes { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
 
     .modal-info {
-      background: #FFF8E1;
-      border: 1px solid #F0D060;
+      background: #FFF7DD;
+      border-left: 4px solid var(--ambar);
       border-radius: 6px;
-      padding: 12px 14px;
+      padding: 11px 14px;
       margin-bottom: 16px;
       font-size: 13px;
-      color: #5A4A00;
+      color: #4D3D00;
     }
-
-    .modal-info strong { color: #3A3000; }
-
-    .modal ol {
-      padding-left: 20px;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: var(--cinza-texto);
-    }
-
-    .modal ol li { margin-bottom: 4px; }
 
     .modal code {
-      background: var(--cinza-bg);
-      padding: 2px 5px;
-      border-radius: 3px;
+      background: #EEF0F7;
+      padding: 1px 5px;
+      border-radius: 4px;
       font-size: 12px;
-      font-family: monospace;
     }
 
-    /* ===== LOADING OVERLAY ===== */
     .loading-inicial {
       position: fixed;
       inset: 0;
-      background: rgba(255,255,255,0.9);
+      background: rgba(237, 239, 245, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       z-index: 998;
       color: var(--azul);
-      font-size: 14px;
       font-weight: 600;
     }
 
-    .loading-inicial .spinner-grande {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(26,26,122,0.15);
+    .spinner-grande {
+      width: 38px;
+      height: 38px;
+      border: 4px solid rgba(23, 23, 110, 0.15);
       border-top-color: var(--azul);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: girar 0.8s linear infinite;
     }
 
-    /* ===== FOOTER ===== */
     footer {
-      text-align: center;
-      padding: 24px;
-      color: var(--cinza-suave);
-      font-size: 12px;
-      border-top: 1px solid var(--cinza-borda);
-      margin-top: 32px;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+      font-size: 13px;
+      color: var(--tinta-suave);
     }
 
-    footer strong { color: var(--vermelho); }
-
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 900px) {
-      .form-lancamento { grid-template-columns: 1fr 1fr; }
-      .btn-lancar { grid-column: 1 / -1; }
-      .graficos-grid { grid-template-columns: 1fr; }
+    /* ===== Telas menores ===== */
+    @media (max-width: 980px) {
+      .trabalho { grid-template-columns: minmax(0, 1fr); }
+      .lancar { position: static; }
+      .graficos-grid { grid-template-columns: minmax(0, 1fr); }
     }
 
-    @media (max-width: 600px) {
-      .header-acoes { width: 100%; }
-      main { padding: 0 12px 32px; }
-      .secao-corpo { padding: 16px; }
-      .form-lancamento { grid-template-columns: 1fr; }
-      thead th, tbody td { padding: 10px 8px; font-size: 13px; }
-      .card-valor { font-size: 20px; }
+    @media (max-width: 640px) {
+      .topo-interno { padding: 10px 16px; }
+      .topo-acoes { width: 100%; margin-left: 0; }
+      .status-sinc { flex: 1 1 100%; padding: 0; }
+      .header-mes { flex: 1; }
+      main { padding: 14px 12px 32px; }
+      .saldo { padding: 20px 18px; border-radius: 12px; }
+      .saldo-cabeca { flex-direction: column-reverse; align-items: stretch; gap: 14px; }
+      .saldo-cabeca > div { min-width: 0; }
+      .btn-meta { align-self: flex-end; }
+      .saldo-valor { font-size: clamp(38px, 12.5vw, 56px); }
+      thead th, tbody td, tfoot td { padding-left: 8px; padding-right: 8px; }
+      .btn-danger { padding: 0 6px; }
+      .saldo-numeros { grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+      .saldo-numeros dd { font-size: 22px; }
+      .lista-cabeca { padding: 14px 16px; }
+      .filtros input { width: 100%; flex: 1 1 100%; }
+      .filtros select { flex: 1; }
+      thead th:nth-child(3), tbody tr:not(.vazio) td:nth-child(3),
+      thead th:nth-child(4), tbody tr:not(.vazio) td:nth-child(4) { display: none; }
+      .sub-categoria { display: block; }
+      thead th:first-child, tbody td:first-child, tfoot td:first-child { padding-left: 16px; }
+      .toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <img src="logo.jpeg" alt="3R Materiais" />
-    <div class="header-titulo">
-      <h1>Controle de Compras</h1>
-      <p>3R Materiais para Construção — Cáceres/MT</p>
-    </div>
+  <header class="topo">
+    <div class="topo-interno">
+      <img src="logo.jpeg" alt="3R Materiais para Construção" />
+      <div class="topo-titulo">
+        <h1>Controle de compras</h1>
+        <p>3R Materiais para Construção, Cáceres/MT</p>
+      </div>
 
-    <div class="header-acoes">
-      <div class="status-sinc" id="status-sinc" title="Status da sincronização">
-        <span class="status-dot"></span>
-        <span id="status-texto">Verificando…</span>
+      <div class="topo-acoes">
+        <div class="status-sinc" id="status-sinc" title="Situação da sincronização com a planilha">
+          <span class="status-dot"></span>
+          <span id="status-texto">Verificando…</span>
+        </div>
+        <button class="btn-icone" id="btn-sincronizar" title="Buscar os dados da planilha agora">Sincronizar</button>
+        <div class="header-mes">
+          <label for="mes-ativo">Mês</label>
+          <input type="month" id="mes-ativo" />
+        </div>
+        <button class="btn-icone" id="btn-config" title="Configurar a ligação com a planilha" aria-label="Configurar sincronização">⚙</button>
       </div>
-      <button class="btn-icone" id="btn-sincronizar" title="Sincronizar dados agora">↻ Sincronizar</button>
-      <div class="header-mes">
-        <label for="mes-ativo">Mês:</label>
-        <input type="month" id="mes-ativo" />
-      </div>
-      <button class="btn-icone" id="btn-config" title="Configurar sincronização">⚙</button>
     </div>
   </header>
 
   <main>
 
-    <!-- ===== CONFIGURAÇÃO DA META ===== -->
-    <div class="secao">
-      <div class="secao-titulo">Meta de Compras do Mês</div>
-      <div class="secao-corpo">
-        <div class="config-grid">
-
-          <div class="campo">
-            <label>Como calcular a meta?</label>
-            <div class="radio-grupo">
-              <label class="radio-opcao" id="opcao-percentual">
-                <input type="radio" name="tipo-meta" value="percentual" checked />
-                <span>Regra 65% do faturamento</span>
-              </label>
-              <label class="radio-opcao" id="opcao-fixo">
-                <input type="radio" name="tipo-meta" value="fixo" />
-                <span>Valor fixo</span>
-              </label>
-            </div>
-            <span class="dica">Regra do 65/25/10: 65% do faturamento vira compras, 25% despesas, 10% sobra.</span>
-          </div>
-
-          <div class="campo" id="campo-faturamento">
-            <label for="faturamento">Faturamento previsto do mês (R$)</label>
-            <input type="number" id="faturamento" step="0.01" min="0" placeholder="Ex: 500000" />
-          </div>
-
-          <div class="campo" id="campo-percentual">
-            <label for="percentual">Percentual (%)</label>
-            <input type="number" id="percentual" step="0.1" min="0" max="100" value="65" />
-          </div>
-
-          <div class="campo" id="campo-meta-fixa" style="display:none">
-            <label for="meta-fixa">Meta manual do mês (R$)</label>
-            <input type="number" id="meta-fixa" step="0.01" min="0" placeholder="Ex: 325000" />
-          </div>
-
-          <div class="campo" style="align-self: end;">
-            <button class="btn btn-secondary" id="btn-salvar-meta">Salvar meta</button>
-          </div>
-
+    <!-- ===== Saldo do mês ===== -->
+    <section class="saldo" id="hero" aria-live="polite">
+      <div class="saldo-cabeca">
+        <div>
+          <div class="saldo-rotulo" id="dash-disponivel-sub">Disponível para comprar</div>
+          <div class="saldo-valor" id="dash-disponivel">R$ 0,00</div>
         </div>
-      </div>
-    </div>
-
-    <!-- ===== DASHBOARD ===== -->
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-titulo">Meta do mês</div>
-        <div class="card-valor" id="dash-meta">R$ 0,00</div>
-        <div class="card-sub" id="dash-meta-sub">Configure a meta acima</div>
+        <button class="btn-meta" id="btn-ajustar-meta" aria-expanded="false" aria-controls="painel-meta">Ajustar meta</button>
       </div>
 
-      <div class="card destaque-vermelho vermelho">
-        <div class="card-titulo">Já comprado</div>
-        <div class="card-valor" id="dash-comprado">R$ 0,00</div>
-        <div class="card-sub" id="dash-comprado-sub">0 lançamentos</div>
-      </div>
-
-      <div class="card destaque-verde verde">
-        <div class="card-titulo">Disponível para comprar</div>
-        <div class="card-valor" id="dash-disponivel">R$ 0,00</div>
-        <div class="card-sub" id="dash-disponivel-sub">Do que sobra da meta</div>
-      </div>
-
-      <div class="card destaque-amarelo">
-        <div class="card-titulo">Consumido da meta</div>
-        <div class="card-valor" id="dash-percentual">0%</div>
-        <div class="barra-container">
+      <div class="regua">
+        <div class="regua-hoje" id="regua-hoje" hidden><span id="regua-hoje-texto">hoje</span></div>
+        <div class="regua-trilho">
           <div class="barra-preenchimento" id="dash-barra" style="width: 0%"></div>
         </div>
       </div>
-    </div>
 
-    <!-- ===== FORMULÁRIO DE LANÇAMENTO ===== -->
-    <div class="secao">
-      <div class="secao-titulo vermelho">Lançar nova compra</div>
-      <div class="secao-corpo">
+      <dl class="saldo-numeros">
+        <div>
+          <dt>Já comprado</dt>
+          <dd><span id="dash-comprado">R$ 0,00</span><small id="dash-comprado-sub">0 lançamentos</small></dd>
+        </div>
+        <div>
+          <dt>Meta do mês</dt>
+          <dd><span id="dash-meta">R$ 0,00</span><small id="dash-meta-sub">Sem meta definida</small></dd>
+        </div>
+        <div>
+          <dt>Usado da meta</dt>
+          <dd id="dash-percentual">0%</dd>
+        </div>
+      </dl>
+
+      <p class="saldo-ritmo" id="dash-ritmo"></p>
+    </section>
+
+    <!-- ===== Ajuste da meta ===== -->
+    <section class="painel-meta" id="painel-meta" hidden>
+      <h2>Meta de compras do mês</h2>
+      <p>Pela regra 65/25/10, até 65% do faturamento vai para compras, 25% para despesas e 10% sobra. Cada mês guarda a própria meta.</p>
+
+      <div class="config-grid">
+        <div class="campo campo-tipo">
+          <label>Como calcular</label>
+          <div class="radio-grupo">
+            <label class="radio-opcao" id="opcao-percentual">
+              <input type="radio" name="tipo-meta" value="percentual" checked />
+              <span>Percentual do faturamento</span>
+            </label>
+            <label class="radio-opcao" id="opcao-fixo">
+              <input type="radio" name="tipo-meta" value="fixo" />
+              <span>Valor fixo</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="campo" id="campo-faturamento">
+          <label for="faturamento">Faturamento previsto (R$)</label>
+          <input type="number" id="faturamento" step="0.01" min="0" placeholder="Ex.: 1100000" />
+        </div>
+
+        <div class="campo" id="campo-percentual">
+          <label for="percentual">Percentual para compras (%)</label>
+          <input type="number" id="percentual" step="0.1" min="0" max="100" value="65" />
+        </div>
+
+        <div class="campo" id="campo-meta-fixa" style="display:none">
+          <label for="meta-fixa">Meta do mês (R$)</label>
+          <input type="number" id="meta-fixa" step="0.01" min="0" placeholder="Ex.: 660000" />
+        </div>
+
+        <div class="campo campo-acao">
+          <button class="btn btn-secondary" id="btn-salvar-meta">Salvar meta</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Lançar + lista ===== -->
+    <div class="trabalho">
+
+      <section class="bloco lancar">
+        <h2 class="bloco-titulo">Lançar compra</h2>
         <div class="form-lancamento">
-          <div class="campo">
-            <label for="l-data">Data</label>
-            <input type="date" id="l-data" />
+          <div class="campo campo-largo">
+            <label for="l-fornecedor">Fornecedor</label>
+            <input type="text" id="l-fornecedor" placeholder="Ex.: Fortlev, Tigre, Gerdau" list="lista-fornecedores" autocomplete="off" />
+            <datalist id="lista-fornecedores"></datalist>
+          </div>
+          <div class="campo campo-largo">
+            <label for="l-valor">Valor (R$)</label>
+            <input type="number" id="l-valor" step="0.01" min="0" placeholder="0,00" inputmode="decimal" />
           </div>
           <div class="campo">
-            <label for="l-fornecedor">Fornecedor</label>
-            <input type="text" id="l-fornecedor" placeholder="Ex: Gerotto, Tigre, Cimento Itaú..." list="lista-fornecedores" />
-            <datalist id="lista-fornecedores"></datalist>
+            <label for="l-data">Data da compra</label>
+            <input type="date" id="l-data" />
           </div>
           <div class="campo">
             <label for="l-categoria">Categoria</label>
@@ -839,105 +794,92 @@
               <option value="Outros">Outros</option>
             </select>
           </div>
-          <div class="campo">
-            <label for="l-valor">Valor (R$)</label>
-            <input type="number" id="l-valor" step="0.01" min="0" placeholder="0,00" />
+          <div class="campo campo-largo">
+            <label for="l-obs">Observação (opcional)</label>
+            <input type="text" id="l-obs" placeholder="Nº da nota, condição de pagamento" />
           </div>
           <button class="btn btn-primary btn-lancar" id="btn-lancar">Lançar</button>
+        </div>
+      </section>
 
-          <div class="campo campo-full">
-            <label for="l-obs">Observações (opcional)</label>
-            <input type="text" id="l-obs" placeholder="Nº nota fiscal, condição de pagamento, etc." />
+      <section class="bloco">
+        <div class="lista-cabeca">
+          <h2 class="bloco-titulo">Lançamentos do mês</h2>
+          <div class="filtros">
+            <input type="text" id="filtro-fornecedor" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor" />
+            <select id="filtro-categoria" aria-label="Filtrar por categoria">
+              <option value="">Todas as categorias</option>
+            </select>
+            <button class="btn btn-outline" id="btn-limpar-filtros">Limpar</button>
           </div>
         </div>
-      </div>
+
+        <div class="tabela-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Fornecedor</th>
+                <th>Categoria</th>
+                <th>Observação</th>
+                <th class="num">Valor</th>
+                <th><span style="position:absolute;left:-9999px">Ação</span></th>
+              </tr>
+            </thead>
+            <tbody id="tbody-lancamentos"></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4">Total do mês</td>
+                <td class="num" id="tfoot-total">R$ 0,00</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="acoes-bar">
+          <button class="btn btn-outline" id="btn-exportar-csv">Exportar CSV</button>
+        </div>
+      </section>
+
     </div>
 
-    <!-- ===== TABELA DE LANÇAMENTOS ===== -->
-    <div class="secao">
-      <div class="secao-titulo">Lançamentos do mês</div>
-
-      <div class="filtros">
-        <label>Filtrar:</label>
-        <input type="text" id="filtro-fornecedor" placeholder="Fornecedor..." />
-        <select id="filtro-categoria">
-          <option value="">Todas as categorias</option>
-        </select>
-        <button class="btn btn-outline" style="padding: 8px 14px; font-size: 13px;" id="btn-limpar-filtros">Limpar</button>
-      </div>
-
-      <div class="tabela-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 100px">Data</th>
-              <th>Fornecedor</th>
-              <th>Categoria</th>
-              <th>Observação</th>
-              <th class="num" style="width: 140px">Valor</th>
-              <th class="centro" style="width: 80px">Ação</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-lancamentos"></tbody>
-          <tfoot>
-            <tr>
-              <td colspan="4">TOTAL DO MÊS</td>
-              <td class="num" id="tfoot-total">R$ 0,00</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <div class="acoes-bar">
-        <button class="btn btn-outline" id="btn-exportar-csv">Exportar CSV</button>
-      </div>
-    </div>
-
-    <!-- ===== GRÁFICOS ===== -->
+    <!-- ===== Gráficos ===== -->
     <div class="graficos-grid">
-      <div class="grafico-box">
-        <div class="grafico-titulo">Compras por dia</div>
-        <div class="grafico-canvas">
-          <canvas id="grafico-dia"></canvas>
-        </div>
-      </div>
-      <div class="grafico-box">
-        <div class="grafico-titulo">Top 5 fornecedores do mês</div>
-        <div class="grafico-canvas">
-          <canvas id="grafico-fornecedores"></canvas>
-        </div>
-      </div>
+      <section class="bloco grafico-box">
+        <h2 class="bloco-titulo">Compras por dia</h2>
+        <div class="grafico-canvas"><canvas id="grafico-dia"></canvas></div>
+      </section>
+      <section class="bloco grafico-box">
+        <h2 class="bloco-titulo">Maiores fornecedores do mês</h2>
+        <div class="grafico-canvas"><canvas id="grafico-fornecedores"></canvas></div>
+      </section>
     </div>
 
   </main>
 
-  <footer>
-    <strong>3R Materiais para Construção</strong> — Cáceres/MT<br />
-    Dados sincronizados com Google Sheets. Acesse a planilha diretamente para auditoria e relatórios.
-  </footer>
+  <footer>Os lançamentos ficam na planilha "3R - Controle de Compras" do Google e aparecem em todos os aparelhos configurados.</footer>
 
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status"></div>
 
-  <!-- Modal de configuração da API -->
+  <!-- Janela de configuração -->
   <div class="modal-overlay" id="modal-config">
     <div class="modal">
-      <h3>Configurar sincronização</h3>
-      <p>Cole a URL da sua Web App do Apps Script e o mesmo token que está no código do script.</p>
+      <h3>Ligar à planilha</h3>
+      <p>Cole o endereço do Web App do Apps Script e a mesma senha que está no código do script.</p>
 
       <div class="modal-info">
-        <strong>Primeira vez?</strong> Siga o passo a passo no arquivo <code>README.md</code>. Você vai criar uma planilha Google, colar o script <code>Code.gs</code>, implantar como Web App e trazer a URL para cá.
+        Os dois dados ficam no Apps Script da planilha: o endereço em Implantar, Gerenciar implantações; a senha na linha <code>const TOKEN</code>.
       </div>
 
       <div class="campo">
-        <label for="cfg-url">URL da Web App</label>
+        <label for="cfg-url">Endereço do Web App</label>
         <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/AKfyc.../exec" />
-        <span class="dica">Deve terminar com <code>/exec</code></span>
+        <span class="dica">Termina em <code>/exec</code></span>
       </div>
 
       <div class="campo">
-        <label for="cfg-token">Token (senha)</label>
+        <label for="cfg-token">Senha (token)</label>
         <input type="text" id="cfg-token" placeholder="A mesma senha definida no Apps Script" />
       </div>
 
@@ -949,7 +891,7 @@
     </div>
   </div>
 
-  <!-- Modal de confirmação -->
+  <!-- Janela de confirmação -->
   <div class="modal-overlay" id="modal-confirmar">
     <div class="modal">
       <h3 id="conf-titulo">Confirmar</h3>
@@ -961,7 +903,6 @@
     </div>
   </div>
 
-  <!-- Loading inicial -->
   <div class="loading-inicial" id="loading-inicial" style="display:none">
     <div class="spinner-grande"></div>
     <div id="loading-texto">Carregando dados da planilha…</div>
@@ -1194,6 +1135,7 @@ async function salvarMetaAtual() {
     estado.meta.porMes[mes] = cfg;
     salvarCache();
     atualizarDashboard();
+    abrirPainelMeta(false);
     toast('Meta salva para ' + formatarMesLabel(mes), 'sucesso');
   } catch (err) {
     toast('Erro ao salvar meta: ' + err.message, 'erro');
@@ -1294,28 +1236,98 @@ function atualizarDashboard() {
   const total = compras.reduce((s, l) => s + Number(l.valor || 0), 0);
   const disponivel = meta - total;
   const pct = meta > 0 ? (total / meta) * 100 : 0;
+  const pctTexto = n => n.toFixed(1).replace('.', ',') + '%';
+  const mesLongo = formatarMesLongo(mes);
 
   $('dash-meta').textContent = brl(meta);
-  $('dash-meta-sub').textContent = meta > 0
-    ? 'Meta configurada para ' + formatarMesLabel(mes)
-    : 'Configure a meta acima';
+  $('dash-meta-sub').textContent = meta > 0 ? descreverMeta(mes) : 'Sem meta definida';
 
   $('dash-comprado').textContent = brl(total);
   $('dash-comprado-sub').textContent = compras.length + ' lançamento' + (compras.length === 1 ? '' : 's');
 
-  $('dash-disponivel').textContent = brl(disponivel);
-  const dispCard = $('dash-disponivel').closest('.card');
-  dispCard.classList.remove('verde', 'vermelho', 'amarelo');
-  if (disponivel < 0)         dispCard.classList.add('vermelho');
-  else if (pct >= 80)          dispCard.classList.add('amarelo');
-  else                         dispCard.classList.add('verde');
+  const hero = $('hero');
+  hero.classList.remove('estado-atencao', 'estado-estourado');
+  if (meta <= 0) {
+    $('dash-disponivel-sub').textContent = 'Defina a meta de ' + mesLongo + ' para ver quanto dá para comprar';
+    $('dash-disponivel').textContent = '—';
+  } else if (disponivel < 0) {
+    $('dash-disponivel-sub').textContent = 'Acima da meta de ' + mesLongo + ' em';
+    $('dash-disponivel').textContent = brl(-disponivel);
+    hero.classList.add('estado-estourado');
+  } else {
+    $('dash-disponivel-sub').textContent = 'Disponível para comprar em ' + mesLongo;
+    $('dash-disponivel').textContent = brl(disponivel);
+    if (pct >= 80) hero.classList.add('estado-atencao');
+  }
 
-  $('dash-percentual').textContent = pct.toFixed(1).replace('.', ',') + '%';
+  $('dash-percentual').textContent = meta > 0 ? pctTexto(pct) : '—';
   const barra = $('dash-barra');
   barra.style.width = Math.min(pct, 100) + '%';
   barra.className = 'barra-preenchimento';
   if (pct >= 100)      barra.classList.add('vermelho');
   else if (pct >= 80)  barra.classList.add('amarelo');
+
+  // Ritmo: compara o quanto do mês já passou com o quanto da meta já foi usado
+  const marca = $('regua-hoje');
+  const ritmo = $('dash-ritmo');
+  const hoje = new Date();
+  const mesAtual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
+  marca.hidden = true;
+  ritmo.innerHTML = '';
+
+  if (meta > 0 && mes === mesAtual) {
+    const dia = hoje.getDate();
+    const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+    const pctMes = (dia / diasNoMes) * 100;
+    const diasRestantes = diasNoMes - dia + 1; // conta o dia de hoje
+
+    marca.hidden = false;
+    marca.style.left = pctMes + '%';
+    marca.classList.toggle('vira', pctMes > 80);
+    $('regua-hoje-texto').textContent = 'hoje, dia ' + dia;
+
+    let frase = 'Passou ' + pctTexto(pctMes) + ' do mês e ' + pctTexto(pct) + ' da meta já foi usada. ';
+    if (disponivel > 0) {
+      frase += 'Para fechar dentro da meta, a média é de <strong>' + brl(disponivel / diasRestantes) +
+               ' por dia</strong> nos ' + diasRestantes + ' dia' + (diasRestantes === 1 ? '' : 's') + ' que restam.';
+    } else {
+      frase += '<strong>A meta do mês já foi toda usada.</strong>';
+    }
+    ritmo.innerHTML = frase;
+  } else if (meta > 0 && mes < mesAtual) {
+    ritmo.textContent = disponivel >= 0
+      ? 'Mês encerrado dentro da meta, com ' + pctTexto(pct) + ' usado.'
+      : 'Mês encerrado acima da meta, com ' + pctTexto(pct) + ' usado.';
+  }
+
+  if (meta <= 0 && $('painel-meta').hidden) { abrirPainelMeta(true); painelMetaAutomatico = true; }
+  else if (meta > 0 && painelMetaAutomatico) { abrirPainelMeta(false); painelMetaAutomatico = false; }
+}
+
+let painelMetaAutomatico = false;
+
+function descreverMeta(mes) {
+  const cfg = getMetaDoMes(mes);
+  if (!cfg) return '';
+  if (cfg.tipo === 'fixo') return 'Valor fixo';
+  return String(cfg.percentual).replace('.', ',') + '% de ' + brl(cfg.faturamento);
+}
+
+function formatarMesLongo(mes) {
+  const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  const [a, m] = mes.split('-');
+  return meses[parseInt(m, 10) - 1] + ' de ' + a;
+}
+
+function abrirPainelMeta(abrir) {
+  $('painel-meta').hidden = !abrir;
+  $('btn-ajustar-meta').setAttribute('aria-expanded', abrir ? 'true' : 'false');
+  $('btn-ajustar-meta').textContent = abrir ? 'Fechar ajuste' : 'Ajustar meta';
+}
+
+function dataLocalISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
 function renderTabela() {
@@ -1324,7 +1336,7 @@ function renderTabela() {
   tbody.innerHTML = '';
 
   if (compras.length === 0) {
-    tbody.innerHTML = '<tr class="vazio"><td colspan="6">Nenhum lançamento neste período. Use o formulário acima para lançar a primeira compra.</td></tr>';
+    tbody.innerHTML = '<tr class="vazio"><td colspan="6">Nenhuma compra lançada neste mês. Preencha fornecedor e valor em "Lançar compra".</td></tr>';
     $('tfoot-total').textContent = brl(0);
     return;
   }
@@ -1335,7 +1347,7 @@ function renderTabela() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${formatarData(l.data)}</td>
-      <td><strong>${escapeHtml(l.fornecedor)}</strong></td>
+      <td><strong>${escapeHtml(l.fornecedor)}</strong><span class="sub-categoria">${escapeHtml(l.categoria)}</span></td>
       <td><span class="badge">${escapeHtml(l.categoria)}</span></td>
       <td>${escapeHtml(l.obs || '—')}</td>
       <td class="num">${brl(l.valor)}</td>
@@ -1383,6 +1395,7 @@ function atualizarFiltroCategorias() {
 
 /* ---------- GRÁFICOS ---------- */
 function renderGraficos() {
+  Chart.defaults.font.family = "'Barlow', 'Segoe UI', Arial, sans-serif";
   const compras = getLancamentosDoMes();
   const mes = $('mes-ativo').value;
 
@@ -1403,7 +1416,7 @@ function renderGraficos() {
       datasets: [{
         label: 'R$ em compras',
         data: porDia,
-        backgroundColor: '#CC1A1A',
+        backgroundColor: '#17176E',
         borderRadius: 3,
       }]
     },
@@ -1419,11 +1432,11 @@ function renderGraficos() {
         }
       },
       scales: {
-        x: { grid: { display: false }, ticks: { color: '#6B7280', font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { color: '#5B5F7A', font: { size: 12 } } },
         y: {
           beginAtZero: true,
-          grid: { color: '#E1E4E8' },
-          ticks: { color: '#6B7280', font: { size: 10 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
+          grid: { color: '#E9EBF2' },
+          ticks: { color: '#5B5F7A', font: { size: 12 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
         }
       }
     }
@@ -1443,7 +1456,7 @@ function renderGraficos() {
       datasets: [{
         label: 'R$',
         data: top.map(x => x[1]),
-        backgroundColor: ['#1A1A7A', '#2E75B6', '#CC1A1A', '#A01414', '#4A4A4A'],
+        backgroundColor: '#17176E',
         borderRadius: 3,
       }]
     },
@@ -1457,10 +1470,10 @@ function renderGraficos() {
       scales: {
         x: {
           beginAtZero: true,
-          grid: { color: '#E1E4E8' },
-          ticks: { color: '#6B7280', font: { size: 10 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
+          grid: { color: '#E9EBF2' },
+          ticks: { color: '#5B5F7A', font: { size: 12 }, callback: v => 'R$ ' + v.toLocaleString('pt-BR') }
         },
-        y: { grid: { display: false }, ticks: { color: '#1A1A1A', font: { size: 11, weight: 'bold' } } }
+        y: { grid: { display: false }, ticks: { color: '#15173A', font: { size: 13, weight: 600 } } }
       }
     }
   });
@@ -1597,7 +1610,9 @@ async function inicializar() {
   });
 
   // Data hoje
-  $('l-data').value = new Date().toISOString().slice(0, 10);
+  $('l-data').value = dataLocalISO();
+
+  $('btn-ajustar-meta').addEventListener('click', () => { painelMetaAutomatico = false; abrirPainelMeta($('painel-meta').hidden); });
 
   // Meta
   document.querySelectorAll('input[name="tipo-meta"]').forEach(r => {
